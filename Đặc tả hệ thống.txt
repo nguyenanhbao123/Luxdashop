@@ -16,29 +16,35 @@ Quản lý sản phẩm (thêm/sửa/xóa)
 Quản lý người dùng
 Quản lý đơn hàng
 Quản lý bài viết/blog
+Quản Lý Liên Hệ
 
 2. Chức năng sản phẩm
 Hiển thị danh sách sản phẩm theo danh mục
 Tìm kiếm và lọc sản phẩm
-Xem chi tiết sản phẩm (hình ảnh, mô tả, đánh giá)
+Xem chi tiết sản phẩm (hình ảnh, mô tả)
 Thêm sản phẩm vào giỏ hàng
+Thêm vào danh sách yêu thích
+
 3. Giỏ hàng & Thanh toán
 Thêm/xóa/sửa số lượng sản phẩm trong giỏ
 Tính toán tổng tiền tự động
 Đặt hàng và thanh toán
 Lưu lịch sử đơn hàng
 Hủy đơn hàng (khi trạng thái "Chưa xác nhận")
+
 4. Quản lý người dùng
 Đăng ký tài khoản mới
 Đăng nhập/Đăng xuất
 Quên mật khẩu
 Cập nhật thông tin cá nhân
 Quản lý địa chỉ giao hàng
+
 5. Blog & Bài viết
 Hiển thị danh sách bài viết
 Xem chi tiết bài viết
 Phân loại bài viết theo chủ đề
 Bình luận bài viết
+
 6. Trang liên hệ
 Form liên hệ với cửa hàng
 Thông tin địa chỉ, số điện thoại
@@ -60,7 +66,8 @@ Khóa/mở tài khoản
 
 Quản lý nội dung:
 Tạo/sửa/xóa bài viết blog
-Quản lý bình luận
+Quản lý bình luận:
+Xem,xóa bình luận
 
 Công nghệ sử dụng
 Frontend: HTML5, CSS3, JavaScript, Bootstrap 5
@@ -69,9 +76,7 @@ Cơ sở dữ liệu: SQL Server
 Xác thực: ASP.NET Core Identity
 Payment: Tích hợp cổng thanh toán (đang phát triển)
 Hướng phát triển trong tương lai
-Hệ thống yêu thích
 
-Thêm sản phẩm vào danh sách yêu thích
 Thêm bài viết vào mục đã lưu
 Nhận thông báo khi sản phẩm yêu thích giảm giá
 Đánh giá nâng cao
@@ -115,7 +120,7 @@ SQL Server 2019+
 Visual Studio 2022 (khuyến nghị)
 Các bước cài đặt
 Clone repository:
-git clone : https://github.com/nguyenanhbao123/DoAn.git
+git clone : https://github.com/nguyenanhbao123/Luxdashop.git
 
 Vào appsetting json thay đổi mã chuỗi kết nối CSDL
 
