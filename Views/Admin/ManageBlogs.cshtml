@@ -1,0 +1,39 @@
+﻿@model IEnumerable<DoAnThietKeWeb1.Models.Blog>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý Bài viết";
+}
+
+<h2>Quản lý Bài viết</h2>
+
+<a class="btn btn-primary mb-3" asp-action="BlogCreate">Thêm bài viết</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tiêu đề</th>
+            <th>Ngày đăng</th>
+            <th>Ảnh</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.PostedDate?.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Image))
+                    {
+                        <img src="@item.Image" width="100" />
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-warning" asp-action="BlogEdit" asp-route-id="@item.BlogId">Sửa</a>
+                    <a class="btn btn-sm btn-danger" asp-action="BlogDelete" asp-route-id="@item.BlogId">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,13 @@
+﻿@model DoAnThietKeWeb1.Models.ContactMessage
+
+<h2>Chi tiết liên hệ</h2>
+<div class="card p-3">
+    <p><strong>Người gửi:</strong> @Model.Name</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Điện thoại:</strong> @Model.Phone</p>
+    <p><strong>Chủ đề:</strong> @Model.Subject</p>
+    <p><strong>Nội dung:</strong> @Model.Message</p>
+    <p><strong>Ngày gửi:</strong> @Model.SentAt</p>
+</div>
+
+<a class="btn btn-secondary mt-3" href="/Admin/ManageContacts">Quay lại</a>

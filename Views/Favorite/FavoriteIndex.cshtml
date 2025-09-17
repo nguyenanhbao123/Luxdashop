@@ -1,0 +1,116 @@
+﻿@model IEnumerable<DoAnThietKeWeb1.Models.Product>
+@{
+    ViewData["Title"] = "Danh sách yêu thích - LuxDaShop";
+    var ModelFavorites = ViewBag.ModelFavorites as List<string> ?? new List<string>();
+}
+
+<div class="heading">
+    <h1>Cửa Hàng Của Chúng Tôi</h1>
+    <p> <a asp-controller="Home" asp-action="HomeIndex">Trang Chủ >></a> Danh sách yêu thích </p>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    
+
+    <section class="products">
+        <h1 class="title"> Danh Sách Sản phẩm yêu thích <span>Mới Nhất</span> <a href="#">Xem Tất Cả >></a> </h1>
+        <div class="box-container">
+            @foreach (var product in Model)
+            {
+                <div class="box">
+                    <div class="icons">
+                        <a asp-controller="Cart"
+                           asp-action="AddToCart"
+                           asp-route-productId="@product.ProductId"
+                           class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </a>
+                        <a href="#" class="favorite-icon @(ModelFavorites.Contains(product.ProductId) ? "favorited" : "")"
+                           data-product-id="@product.ProductId"
+                           data-is-favorited="@(ModelFavorites.Contains(product.ProductId).ToString().ToLower())"
+                           style="color: @(ModelFavorites.Contains(product.ProductId) ? "#e74c3c" : "#666"); cursor: pointer;">
+                            <i class="fas fa-heart"></i>
+                        </a>
+                        <a asp-controller="Shop" asp-action="Shopdetail" asp-route-id="@product.ProductId" class="fas fa-eye"></a>
+                    </div>
+                    <div class="image">
+                        <img src="@product.Image" alt="@product.ProductName" />
+                    </div>
+                    <div class="content">
+                        <h3>@product.ProductName</h3>
+                        <div class="price">@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                        <div class="stars">
+                            @{
+                                int stars = (int)Math.Floor(product.AverageRating ?? 0);
+                                for (int i = 0; i < stars; i++)
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                for (int i = stars; i < 5; i++)
+                                {
+                                    <i class="far fa-star"></i>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}
+else
+{
+    <div id="empty-cart" class="empty-cart">
+        <img src="https://www.svgrepo.com/show/17356/empty-cart.svg" alt="Empty cart" />
+        <h1 class="mb-3"><strong>Danh sách yêu thích của bạn đang trống</strong></h1>
+        <a href="/Shop/ShopIndex" class="btn-shopping">
+            <i class="fas fa-shopping-bag me-2"></i> GHÉ QUA CỬA HÀNG NGAY
+        </a>
+    </div>
+}
+
+<script>
+    document.querySelectorAll('.favorite-icon').forEach(icon => {
+        icon.addEventListener('click', function (e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            const isFavorited = this.getAttribute('data-is-favorited') === 'true';
+            const url = isFavorited ? '/Favorite/RemoveFromFavorite' : '/Favorite/AddToFavorite';
+            const data = { productId: productId };
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '@Html.AntiForgeryToken()'.match(/value="([^"]+)"/)[1]
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else if (data.success) {
+                    this.setAttribute('data-is-favorited', (!isFavorited).toString().toLowerCase());
+                    this.style.color = isFavorited ? '#666' : '#e74c3c';
+                    this.classList.toggle('favorited');
+                    if (isFavorited) {
+                        this.closest('.box').remove(); // Xóa sản phẩm khỏi danh sách
+                        if (!document.querySelector('.box-container .box')) {
+                            window.location.reload(); // Tải lại trang nếu danh sách rỗng
+                        }
+                    } else {
+                        alert('Đã thêm vào danh sách yêu thích!');
+                    }
+                } else {
+                    alert('Có lỗi xảy ra khi cập nhật danh sách yêu thích.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi kết nối đến máy chủ.');
+            });
+        });
+    });
+</script>

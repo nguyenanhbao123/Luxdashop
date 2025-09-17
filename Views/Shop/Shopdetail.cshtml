@@ -1,0 +1,179 @@
+﻿@model DoAnThietKeWeb1.Models.Product
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm - " + Model.ProductName;
+    var ModelFavorites = ViewBag.ModelFavorites as List<string> ?? new List<string>();
+    bool isFavorited = ModelFavorites.Contains(Model.ProductId);
+}
+
+<div class="product-detail">
+    <div class="product-image">
+        <img src="@Model.Image" alt="@Model.ProductName" />
+    </div>
+
+    <div class="product-info">
+        <h1 class="product-name" style="font-size:5.5rem">@Model.ProductName</h1>
+
+        @if (Model.Trending == true)
+        {
+            <div class="trending-badge" style="font-size:2.5rem">
+                <i class="fas fa-fire"></i> Sản phẩm đang HOT
+            </div>
+        }
+
+        <div class="rating" style="font-size:2.5rem">
+            <span class="rating-stars" style="font-size:1.8rem">
+                @{
+                    var rating = Model.AverageRating ?? 0;
+                    int fullStars = (int)rating;
+                    bool hasHalfStar = (rating - fullStars) >= 0.5m;
+                    for (int i = 0; i < fullStars; i++)
+                    {
+                        <i class="fas fa-star"></i>
+                    }
+                    if (hasHalfStar)
+                    {
+                        <i class="fas fa-star-half-alt"></i>
+                    }
+                    for (int i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++)
+                    {
+                        <i class="far fa-star"></i>
+                    }
+                }
+            </span>
+            <span class="rating-value">@rating.ToString("0.0")/5</span>
+        </div>
+
+        <div class="price" style="font-size:3.5rem">@Model.Price.ToString("N0") VNĐ / Kg</div>
+
+        <!-- Form Thêm vào giỏ hàng -->
+        <form method="post" asp-controller="Cart" asp-action="AddToCart" class="add-to-cart-form">
+            <input type="hidden" name="productId" value="@Model.ProductId" />
+            <button type="submit" class="btn-add-to-cart">
+                <i class="fas fa-shopping-cart" style="font-size:1.5rem"></i> Thêm vào giỏ hàng
+            </button>
+        </form>
+
+        <!-- Nút Yêu thích -->
+        <a href="#" class="favorite-icon @(isFavorited ? "favorited" : "")"
+           data-product-id="@Model.ProductId"
+           data-is-favorited="@isFavorited.ToString().ToLower()"
+           style="font-size:1.5rem; display:inline-block; padding:8px 20px; border-radius:5px; color:@(isFavorited ? "#e74c3c" : "#666"); border:1px solid @(isFavorited ? "#e74c3c" : "#666"); cursor:pointer; text-decoration:none;">
+            <i class="fas fa-heart"></i> @(isFavorited ? "Bỏ yêu thích" : "Yêu thích")
+        </a>
+
+        <div class="divider"></div>
+
+        <div class="category">
+            <div class="category-title" style="font-size:2.5rem">Phân loại sản phẩm:</div>
+            <div class="category-tags">
+                @if (!string.IsNullOrEmpty(Model.Category))
+                {
+                    foreach (var tag in Model.Category.Split(','))
+                    {
+                        <span class="category-tag" style="font-size:1.8rem">@tag.Trim()</span>
+                    }
+                }
+                else
+                {
+                    <span class="category-tag" style="font-size:1.5rem">Chưa phân loại</span>
+                }
+            </div>
+        </div>
+
+        <div class="description">
+            <h3 style="font-size:2.5rem">
+                <i class="fas fa-info-circle"></i> Mô tả sản phẩm
+            </h3>
+            <div class="description-content">
+                <p style="font-size:1.5rem">@Model.Description</p>
+
+                <div class="benefits">
+                    <div class="benefit" style="font-size:1.8rem">
+                        @{
+                            var category = Model.Category?.ToLower() ?? "";
+                            if (category.Contains("Vali"))
+                            {
+                                <i class="fas fa-suitcase-rolling"></i>
+                                <div>Chất liệu bền bỉ<br>Bảo hành chính hãng</div>
+                            }
+                            else if (category.Contains("Ví"))
+                            {
+                                <i class="fas fa-wallet"></i>
+                                <div>Da thật cao cấp<br>Độ bền vượt trội</div>
+                            }
+                            else if (category.Contains("Balo"))
+                            {
+                                <i class="fas fa-backpack"></i>
+                                <div>Thiết kế tiện dụng<br>Nhiều ngăn chứa</div>
+                            }
+                            else if (category.Contains("Thắt lưng"))
+                            {
+                                <i class="fas fa-ring"></i>
+                                <div>Da thật<br>Khóa hợp kim bền đẹp</div>
+                            }
+                            else
+                            {
+                                <i class="fas fa-gem"></i>
+                                <div>Phụ kiện thời trang<br>Chính hãng</div>
+                            }
+                        }
+                    </div>
+
+                    <div class="benefit" style="font-size:1.8rem">
+                        <i class="fas fa-truck"></i>
+                        <div>Giao hàng<br>nhanh chóng</div>
+                    </div>
+
+                    <div class="benefit" style="font-size:1.8rem">
+                        <i class="fas fa-certificate"></i>
+                        <div>Bảo hành<br>chính hãng</div>
+                    </div>
+
+                    <div class="benefit" style="font-size:1.8rem">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>Cam kết<br>chất lượng</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.querySelector('.favorite-icon').addEventListener('click', function (e) {
+        e.preventDefault();
+        const productId = this.getAttribute('data-product-id');
+        const isFavorited = this.getAttribute('data-is-favorited') === 'true';
+        const url = isFavorited ? '/Favorite/RemoveFromFavorite' : '/Favorite/AddToFavorite';
+        const data = { productId: productId };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '@Html.AntiForgeryToken()'.match(/value="([^"]+)"/)[1]
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl; // Chuyển hướng đến đăng nhập nếu chưa đăng nhập
+            } else if (data.success) {
+                this.setAttribute('data-is-favorited', (!isFavorited).toString().toLowerCase());
+                this.style.color = isFavorited ? '#666' : '#e74c3c';
+                this.style.borderColor = isFavorited ? '#666' : '#e74c3c';
+                this.classList.toggle('favorited');
+                this.innerHTML = `<i class="fas fa-heart"></i> ${isFavorited ? 'Yêu thích' : 'Bỏ yêu thích'}`;
+                alert(isFavorited ? 'Đã xóa khỏi danh sách yêu thích!' : 'Đã thêm vào danh sách yêu thích!');
+            } else {
+                alert('Có lỗi xảy ra: ' + (data.message || 'Lỗi không xác định'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi kết nối đến máy chủ.');
+        });
+    });
+</script>

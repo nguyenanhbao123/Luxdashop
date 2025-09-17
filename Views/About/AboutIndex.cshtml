@@ -1,0 +1,45 @@
+﻿@model IEnumerable<DoAnThietKeWeb1.Models.Gallery>
+@{
+        ViewData["Title"] = "Giới thiệu - Goroco Shop";
+}
+}
+<div class="heading">
+    <h1>Về Chúng Tôi</h1>
+    <p> <a asp-action="HomeIndex" asp-controller="Home">Trang Chủ >></a> Giới Thiệu </p>
+</div>
+
+<section class="about">
+
+    <div class="image">
+        <img src="~/image/about-img.jpg" alt="">
+    </div>
+
+    <div class="content">
+        <span>Chào Mừng Đến Với Cửa Hàng Chúng Tôi</span>
+        <h3>Thực Phẩm Tươi Sạch Và Hữu Cơ</h3>
+        <p>Chúng tôi cung cấp các sản phẩm sạch, an toàn và thân thiện với môi trường. Với tiêu chí “Chất lượng là ưu tiên hàng đầu”, cửa hàng luôn đảm bảo nguồn hàng tươi ngon mỗi ngày cho khách hàng.</p>
+        <p>Hãy đồng hành cùng chúng tôi để chăm sóc sức khỏe gia đình bạn bằng những sản phẩm hữu cơ chất lượng, giá cả hợp lý và phục vụ tận tâm.</p>
+        <a href="#" class="btn">Xem Thêm</a>
+    </div>
+
+</section>
+
+<section class="gallery">
+
+    <h1 class="title"> Bộ Sưu Tập <span>Hình Ảnh</span> <a href="#">Xem Tất Cả >></a> </h1>
+
+    <div class="box-container">
+        @foreach (var image in Model)
+        {
+            <div class="box">
+                <img src="@Url.Content(image.Path)" alt="@image.ImageName" />
+                <div class="icons">
+                    <a href="#" class="fas fa-eye"></a>
+                    <a href="#" class="fas fa-heart"></a>
+                    <a href="#" class="fas fa-share-alt"></a>
+                </div>
+            </div>
+        }
+    </div>
+
+</section>

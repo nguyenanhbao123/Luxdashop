@@ -1,0 +1,130 @@
+﻿@model IEnumerable<DoAnThietKeWeb1.Models.Product>
+@{
+    ViewData["Title"] = "Trang chủ - LUXDASHOP";
+    var ModelFavorites = ViewBag.ModelFavorites as List<string> ?? new List<string>();
+}
+}
+<section class="home">
+
+    <div class="slides-container">
+
+        <div class="slide active">
+            <div class="content">
+                <span>Tụ Trường Rộn Ràng Deal Ngập Tràng  </span>
+                <h3>Giảm giá đến 17%</h3>
+                <a href="/Shop" class="btn">Mua ngay</a>
+            </div>
+            <div class="image">
+                <img src="~/image/home-1.png" alt="">
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <span>Giảm Sốc </span>
+                <h3>Ưu đãi lên đến 50%</h3>
+                <a href="/Shop" class="btn">Mua ngay</a>
+            </div>
+            <div class="image">
+                <img src="~/image/home-2.png" alt="">
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div id="next-slide" class="fas fa-angle-right" onclick="next()"></div>
+    <div id="prev-slide" class="fas fa-angle-left" onclick="next()"></div>
+
+</section>
+
+
+<section class="products">
+
+    <h1 class="title"> Sản phẩm <span>nổi bật</span> </h1>
+
+    <div class="box-container">
+        @foreach (var product in Model)
+        {
+            <div class="box">
+                <div class="icons">
+                    <a asp-controller="Cart"
+                       asp-action="AddToCart"
+                       asp-route-productId="@product.ProductId"
+                       class="add-to-cart"
+                       title="Thêm vào giỏ hàng">
+                        <i class="fas fa-shopping-cart"></i>
+                    </a>
+
+                    <a href="#" class="favorite-icon @(ModelFavorites.Contains(product.ProductId) ? "favorited" : "")"
+                       data-product-id="@product.ProductId"
+                       data-is-favorited="@(ModelFavorites.Contains(product.ProductId).ToString().ToLower())"
+                       style="color: @(ModelFavorites.Contains(product.ProductId) ? "#e74c3c" : "#666"); cursor: pointer;">
+                        <i class="fas fa-heart"></i>
+                    </a>
+
+                    <a asp-controller="Shop" asp-action="Shopdetail" asp-route-id="@product.ProductId" class="fas fa-eye" title="Xem chi tiết"></a>
+                </div>
+                <div class="image">
+                    <img src="@product.Image" alt="@product.ProductName" style=" object-fit: cover; border-radius: 8px;" />
+                </div>
+                <div class="content">
+                    <h3>@product.ProductName</h3>
+                    <div class="price">@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                    <div class="stars">
+                        @{
+                            int stars = (int)Math.Floor(product.AverageRating ?? 0);
+                            for (int i = 0; i < stars; i++)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            for (int i = stars; i < 5; i++)
+                            {
+                                <i class="far fa-star"></i>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</section>
+<script>
+    document.querySelectorAll('.favorite-icon').forEach(icon => {
+        icon.addEventListener('click', function (e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            const isFavorited = this.getAttribute('data-is-favorited') === 'true';
+            const url = isFavorited ? '/Favorite/RemoveFromFavorite' : '/Favorite/AddToFavorite';
+            const data = { productId: productId };
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '@Html.AntiForgeryToken()'.match(/value="([^"]+)"/)[1]
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else if (data.success) {
+                    this.setAttribute('data-is-favorited', (!isFavorited).toString().toLowerCase());
+                    this.style.color = isFavorited ? '#666' : '#e74c3c';
+                    this.classList.toggle('favorited');
+                    alert(isFavorited ? 'Đã xóa khỏi danh sách yêu thích!' : 'Đã thêm vào danh sách yêu thích!');
+                } else {
+                    alert('Có lỗi xảy ra khi cập nhật danh sách yêu thích.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi kết nối đến máy chủ.');
+            });
+        });
+    });
+</script>
