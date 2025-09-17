@@ -122,8 +122,9 @@ Các bước cài đặt
 Clone repository:
 git clone : https://github.com/nguyenanhbao123/Luxdashop.git
 
-Vào appsetting json thay đổi mã chuỗi kết nối CSDL
+Vào appsetting json, gorocoDatabase  thay đổi mã chuỗi kết nối CSDL
 
 Cập nhật cơ sở dữ liệu trong package manager console:
- database-update
+ update-database
+nếu update-database không được hãy xóa các migration và csdl cũ r tạo migratio mới rôi mới update
 Chạy ứng dụng
