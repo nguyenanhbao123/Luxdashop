@@ -43,7 +43,7 @@
             <span class="rating-value">@rating.ToString("0.0")/5</span>
         </div>
 
-        <div class="price" style="font-size:3.5rem">@Model.Price.ToString("N0") VNĐ / Kg</div>
+        <div class="price" style="font-size:3.5rem">@Model.Price.ToString("N0") VNĐ </div>
 
         <!-- Form Thêm vào giỏ hàng -->
         <form method="post" asp-controller="Cart" asp-action="AddToCart" class="add-to-cart-form">
